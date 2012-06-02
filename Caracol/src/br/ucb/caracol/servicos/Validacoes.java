@@ -64,7 +64,6 @@ public class Validacoes {
 
 		Pattern padrao = Pattern.compile("^[\\:=();<>*/+-{}\n \t]$");
 		Matcher result = padrao.matcher(string);
-		System.out.println("Aqui terminalSymbol"+result.matches());
 		return result.matches();
 	}
 
