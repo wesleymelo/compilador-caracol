@@ -6,7 +6,7 @@ public class KeysWords {
 	
 	private ArrayList<String> keysWords;
 
-	public KeysWords(ArrayList<String> keysWords) {
+	public KeysWords() {
 		
 		setKeysWords(new ArrayList<String>());
 		getKeysWords().add("el_programa");
