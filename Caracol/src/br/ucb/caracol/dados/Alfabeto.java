@@ -70,4 +70,18 @@ public class Alfabeto {
         getLetras().add('Z');
     }
     
+	public boolean verificaAlfabeto(char caracter){
+		return (getLetras().contains(caracter));
+	}
+	public boolean verificaAlfabeto(String caracter){
+		if(caracter.isEmpty())
+			return false;
+		for (char Char :caracter.toCharArray()) {
+			if(!getLetras().contains(Char))
+				return false;
+		}
+		return true;
+		
+	}
+	
 }

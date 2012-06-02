@@ -6,7 +6,7 @@ public class Simbolos {
 	
 	private ArrayList<Character> simbolos;
 
-	public Simbolos(ArrayList<Character> simbolos) {
+	public Simbolos() {
 		setSimbolos(new ArrayList<Character>());
 		
 		getSimbolos().add(':');
@@ -25,10 +25,20 @@ public class Simbolos {
 		getSimbolos().add('+');
 		getSimbolos().add('-');
 		getSimbolos().add('_');
+		getSimbolos().add(' ');
+		
 		
 		
 	}
-
+	
+	public boolean verificaSimbolos(char simbolo){
+		return (getSimbolos().contains(simbolo));
+	}
+	
+	public boolean verificaVazio(char vazio){
+		return (vazio == ' ');
+	}
+	
 	public ArrayList<Character> getSimbolos() {
 		return simbolos;
 	}

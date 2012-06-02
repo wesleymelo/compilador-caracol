@@ -35,6 +35,10 @@ public class KeysWords {
 		this.keysWords = keysWords;
 	}
 	
+	public boolean verificaPalavrasReservadas(String string){
+		return (getKeysWords().contains(string));
+	}
+	
 	
 	
 	
