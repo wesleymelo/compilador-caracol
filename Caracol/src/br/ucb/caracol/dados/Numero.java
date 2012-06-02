@@ -19,7 +19,7 @@ public class Numero {
 		getNumeros().add('8');
 		getNumeros().add('9');
 	}
-	public boolean verificaNumeros(String numero){
+	public boolean verificaNumero(String numero){
 		if(numero.isEmpty())
 			return false;
 		for (char character : numero.toCharArray()) {
@@ -28,7 +28,7 @@ public class Numero {
 		}
 		return true;
 	}
-	public boolean verificaNumeros(char numero){
+	public boolean verificaNumero(char numero){
 		return (getNumeros().contains(numero));
 	}
 	
