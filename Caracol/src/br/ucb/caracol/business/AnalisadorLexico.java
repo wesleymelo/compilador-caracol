@@ -30,8 +30,8 @@ public class AnalisadorLexico {
 				if(!isComentario && i < codigo.length()){
 					if(!Validacoes.isValido(codigo.charAt(i))){
 						if(Validacoes.isTerminarNaoSimbolo(codigo.charAt(i))){
-							View.showFeedBack("ERRO 01: SÃMBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
-							//throw new CompilatorException("ERRO 01: SÃMBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
+							View.showFeedBack("ERRO 01: SÍMBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
+							//throw new CompilatorException("ERRO 01: SÁMBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
 						}
 					}else{
 						if(Validacoes.isLetra(codigo.charAt(i)))
@@ -46,8 +46,8 @@ public class AnalisadorLexico {
 		}
 
 		if(isComentario){
-			View.showFeedBack("ERRO 02: FIM DE COMENTÃRIO ESPERADO\n");
-			throw new CompilatorException("ERRO 02: FIM DE COMENTÃRIO ESPERADO\n");
+			View.showFeedBack("ERRO 02: FIM DE COMENTÁRIO ESPERADO\n");
+			throw new CompilatorException("ERRO 02: FIM DE COMENTÁRIO ESPERADO\n");
 		}
 	}
 
@@ -66,9 +66,9 @@ public class AnalisadorLexico {
 		}
 		boolean isNumberValid = Validacoes.isNumberValid(valor.toString()); 
 		if(isNumberValid){
-			return verificaSequencia(valor, codigo, i, "Lexema numÃ©rico: [ ",temp);
+			return verificaSequencia(valor, codigo, i, "Lexema numérico: [ ",temp);
 		}
-		View.showFeedBack("Palavra nÃ£o Identificada: [ "+valor.toString()+" ]\n");
+		View.showFeedBack("Palavra não Identificada: [ "+valor.toString()+" ]\n");
 		return i;  
 	}
 
@@ -92,15 +92,15 @@ public class AnalisadorLexico {
 			
 			if(verificaKeyWord(valor.toString()))
 				return verificaSequencia(valor, codigo, i, "Palavra Reservada: [ ",temp);
-			return verificaSequencia(valor, codigo, i, "Lexema nÃ£o numÃ©rico: [ ",temp);
+			return verificaSequencia(valor, codigo, i, "Lexema não numérico: [ ",temp);
 		}
-		View.showFeedBack("Palavra nÃ£o Identificada: [ "+valor.toString()+" ]\n");
+		View.showFeedBack("Palavra não Identificada: [ "+valor.toString()+" ]\n");
 		return i;    
 	}
 
 	public static int verificaSimbolo( String codigo, int i, ArrayList<String> temp){
 		StringBuilder valor = new StringBuilder();
-		boolean flag = false;
+		//boolean flag = false;
 		if(i <= codigo.length()-1){
 			valor.append(codigo.charAt(i));
 			if(i != codigo.length()){
@@ -110,16 +110,16 @@ public class AnalisadorLexico {
 						valor.append(codigo.charAt(i));
 						flag = true;
 						if(Validacoes.isCompostSymbol(valor.toString())){
-							return verificaSequencia(valor, codigo, i,"SÃ­mbolo Composto: [ ");
+							return verificaSequencia(valor, codigo, i,"Símbolo Composto: [ ");
 						}
 					}
 				}
 				if(flag)
 					valor.deleteCharAt(1);*/
-				return verificaSequencia(valor, codigo, i,"SÃ­mbolo Simples: [ ",temp);
+				return verificaSequencia(valor, codigo, i,"Símbolo Simples: [ ",temp);
 			}
 		}
-		return verificaSequencia(valor, codigo, i,"SÃ­mbolo Simples: [ ",temp);
+		return verificaSequencia(valor, codigo, i,"Símbolo Simples: [ ",temp);
 
 	}
 
@@ -141,7 +141,7 @@ public class AnalisadorLexico {
 					valor.append(codigo.charAt(i));
 				}
 			}
-			View.showFeedBack("Palavra nÃ£o Identificada: [ "+valor.toString()+" ]\n");
+			View.showFeedBack("Palavra não Identificada: [ "+valor.toString()+" ]\n");
 		}
 		return i;*/
 	}

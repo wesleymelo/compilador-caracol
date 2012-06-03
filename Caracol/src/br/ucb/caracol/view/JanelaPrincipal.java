@@ -12,6 +12,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+@SuppressWarnings("serial")
 public class JanelaPrincipal extends javax.swing.JFrame {
 
     public JanelaPrincipal() {
@@ -19,7 +20,6 @@ public class JanelaPrincipal extends javax.swing.JFrame {
         setResizable(false);
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -191,10 +191,10 @@ private void itemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                 painelCompilador.setVisible(true);
             }
             else{
-                View.showMsgErro("Tipo de arquivo n√£o √© v√°lido.");
+                View.showMsgErro("Tipo de arquivo n„o È v·lido.");
             }
         } else {
-            View.showMsg("Voce n√£o selecionou nenhum arquivo.");
+            View.showMsg("Voce n„o selecionou nenhum arquivo.");
         }
 }//GEN-LAST:event_itemAbrirActionPerformed
 

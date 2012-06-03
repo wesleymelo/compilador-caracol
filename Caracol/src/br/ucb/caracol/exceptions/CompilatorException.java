@@ -1,6 +1,7 @@
 
 package br.ucb.caracol.exceptions;
 
+@SuppressWarnings("serial")
 public class CompilatorException extends RuntimeException{
     private String msg;
 
