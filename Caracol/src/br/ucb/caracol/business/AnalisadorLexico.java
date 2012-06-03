@@ -3,12 +3,10 @@ package br.ucb.caracol.business;
 
 
 import java.util.ArrayList;
-
 import br.ucb.caracol.dados.KeysWords;
 import br.ucb.caracol.exceptions.CompilatorException;
 import br.ucb.caracol.servicos.Validacoes;
 import br.ucb.caracol.view.View;
-
 
 public class AnalisadorLexico {
 	public static void analisadorLexico(String codigo) {
@@ -44,6 +42,8 @@ public class AnalisadorLexico {
 				}
 			}
 		}
+		AnalisadorSintatico sintatico = new AnalisadorSintatico();
+		sintatico.verificaCodigo(codigo, temp);
 
 		if(isComentario){
 			View.showFeedBack("ERRO 02: FIM DE COMENTÁRIO ESPERADO\n");

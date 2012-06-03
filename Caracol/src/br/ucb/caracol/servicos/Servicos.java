@@ -50,7 +50,6 @@ import br.ucb.caracol.view.JanelaPrincipal;
     				j++;
     			}
     		}
-    		
     		return linhas;
     	}
         

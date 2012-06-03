@@ -79,7 +79,7 @@ public class JanelaPrincipal extends javax.swing.JFrame {
         });
 
         b_salvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ucb/caracol/imagens/save.png"))); // NOI18N
-        b_salvar.setText("Salvar AlteraÃ§Ãµes");
+        b_salvar.setText("Salvar Alterações");
         b_salvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_salvarActionPerformed(evt);
