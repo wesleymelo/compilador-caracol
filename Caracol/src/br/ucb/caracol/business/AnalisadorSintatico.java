@@ -1,16 +1,12 @@
 
 package br.ucb.caracol.business;
 
-import java.beans.Expression;
-
 import br.ucb.caracol.dados.Alfabeto;
 import br.ucb.caracol.dados.Caracol;
 import br.ucb.caracol.dados.Identificadores;
 import br.ucb.caracol.dados.Numero;
 import br.ucb.caracol.exceptions.CompilatorException;
 import br.ucb.caracol.servicos.Servicos;
-import br.ucb.compilador.business.SeparaCodigo;
-import br.ucb.compilador.erros.CompilacaoException;
 
 public class AnalisadorSintatico {
 	private String codigo;
@@ -153,15 +149,121 @@ public class AnalisadorSintatico {
 		}
 	}
 
+	private void bloco() {
+		if(getTokens()[getNumerotoken()].equals("+")){
+			reconhecer("{");
+			do{
+				if(getTokens()[getNumerotoken()].equals(";"))
+					reconhecer(";");
+				cmd();									
+			}while(getTokens()[getNumerotoken()].equals(";"));
+			reconhecer("}");
+		}
+		else{
+			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Bloco esperado");
+		}
+	}	
+
 	private void expr() {
 		if(getTokens()[getNumerotoken()].equals("+") || getTokens()[getNumerotoken()].equals("-") || 
-			getTokens()[getNumerotoken()].equals("(") || getTokens()[getNumerotoken()].equals("no") || getTokens()[getNumerotoken()].equals("no") || 
-			  new Numero().getNumeros().contains(getTokens()[getNumerotoken()]) || getTokens()[getNumerotoken()].equals("o") || getTokens()[getNumerotoken()].equals("y") ||
-			  getTokens()[getNumerotoken()].equals("*")	|| getTokens()[getNumerotoken()].equals("/") || getTokens()[getNumerotoken()].equals("IDEN"))
+			getTokens()[getNumerotoken()].equals("(") || getTokens()[getNumerotoken()].equals("no") || getTokens()[getNumerotoken()].equals("IDEN") || 
+			  new Numero().getNumeros().contains(getTokens()[getNumerotoken()]))
 		{
 			siexpr();
-			if(getTokens()[getNumerotoken()].equals("=")))
+			if(getTokens()[getNumerotoken()].equals("=") || getTokens()[getNumerotoken()].equals("<") || getTokens()[getNumerotoken()].equals(">") || 
+					getTokens()[getNumerotoken()].equals("<") || getTokens()[getNumerotoken()].equals("<>") || getTokens()[getNumerotoken()].equals("<=") ||
+						getTokens()[getNumerotoken()].equals(">=")){
 			
+				reconhecer(getTokens()[getNumerotoken()]);
+				siexpr();
+			}
+		}
+		else{
+			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperada uma expressão");
+		}
+		
+	}
+	
+	private void siexpr() {
+		if(getTokens()[getNumerotoken()].equals("+") || getTokens()[getNumerotoken()].equals("-") || getTokens()[getNumerotoken()].equals("(") || 
+					getTokens()[getNumerotoken()].equals("no") || getTokens()[getNumerotoken()].equals("IDEN") ||
+						 new Numero().getNumeros().contains(getTokens()[getNumerotoken()])){
+			
+			if(getTokens()[getNumerotoken()].equals("+") || getTokens()[getNumerotoken()].equals("-")){
+				
+				if(getTokens()[getNumerotoken()].equals("+")){
+					reconhecer("+");
+				}else if(getTokens()[getNumerotoken()].equals("-")){
+					reconhecer("-");
+				}
+			}
+			do{
+				if(getTokens()[getNumerotoken()].equals("+")){
+					reconhecer("+");
+				}else if(getTokens()[getNumerotoken()].equals("-")){
+					reconhecer("-");
+				}else if(getTokens()[getNumerotoken()].equals("o")){
+					reconhecer("o");
+				}
+				termo();
+			}while(getTokens()[getNumerotoken()].equals("+") || getTokens()[getNumerotoken()].equals("-") || getTokens()[getNumerotoken()].equals("o"));
+		}else{
+			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Operador ou identificador esperado");
+		}
+	}
+
+	private void termo() {
+		if(getTokens()[getNumerotoken()].equals("+") || getTokens()[getNumerotoken()].equals("-") || getTokens()[getNumerotoken()].equals("(") || 
+				getTokens()[getNumerotoken()].equals("no") || getTokens()[getNumerotoken()].equals("IDEN") ||
+				 new Numero().getNumeros().contains(getTokens()[getNumerotoken()])){
+			fator();
+			while (getTokens()[getNumerotoken()].equals("*") || getTokens()[getNumerotoken()].equals("/") || getTokens()[getNumerotoken()].equals("y")) {
+				reconhecer(getTokens()[getNumerotoken()]);
+				fator();
+			}
+		}
+		
+	}
+	
+	
+
+	private void fator() {
+		if(getTokens()[getNumerotoken()].equals("(") || getTokens()[getNumerotoken()].equals("+") || getTokens()[getNumerotoken()].equals("-") ||
+				getTokens()[getNumerotoken()].equals("no") || new Caracol().getNumeros().verificaNumero(getTokens()[getNumerotoken()]) || 
+				getTokens()[getNumerotoken()].equals("IDEN")){
+					
+				if(getTokens()[getNumerotoken()].equals("(")){
+					reconhecer("(");
+					expr();
+					reconhecer(")");
+				}else if(getTokens()[getNumerotoken()].equals("+")){
+					reconhecer("+");
+					expr();
+				}else if(getTokens()[getNumerotoken()].equals("-")){
+					reconhecer("-");
+					expr();
+				}else if(getTokens()[getNumerotoken()].equals("no")){
+					reconhecer("no");
+					fator();
+				}else if(new Caracol().getNumeros().verificaNumero(getTokens()[getNumerotoken()])){
+					constante();
+				}else if(getTokens()[getNumerotoken()].equals("IDEN")){
+					reconhecer("IDEN");
+				}
+		}else{
+			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Fator");
+		}
+		
+		
+	}
+
+	private void constante() {
+		if(getTokens()[getNumerotoken()].equals("+") || getTokens()[getNumerotoken()].equals("-") || new Caracol().getNumeros().verificaNumero(getTokens()[getNumerotoken()])){
+			if(getTokens()[getNumerotoken()].equals("+")){
+				reconhecer("+");
+			}else if(getTokens()[getNumerotoken()].equals("-"))
+				reconhecer("-");
+			reconhecer(getTokens()[getNumerotoken()]);
 		}
 		
 	}
@@ -185,6 +287,21 @@ public class AnalisadorSintatico {
 		
 	}
 
+	private void tipo() {
+		if(getTokens()[getNumerotoken()].equals("int") || getTokens()[getNumerotoken()].equals("vetor")){
+			if(getTokens()[getNumerotoken()].equals("int")){
+				reconhecer("int");
+			}else if(getTokens()[getNumerotoken()].equals("vetor")){
+				reconhecer("vetor");
+				if(new Caracol().getNumeros().verificaNumero(getTokens()[getNumerotoken()])){
+					reconhecer(getTokens()[getNumerotoken()]);
+				}
+				reconhecer("]");
+					
+			}
+		}
+	}
+
 	private void dec_func() {
 		if((getTokens()[getNumerotoken()]).equals("la_funcion")){
 			while((getTokens()[getNumerotoken()]).equals("la_funcion")){
@@ -201,6 +318,28 @@ public class AnalisadorSintatico {
 				corpo();
 			}
 		}
+		
+	}
+
+	private void l_par() {
+		if(getTokens()[getNumerotoken()].equals("int") || getTokens()[getNumerotoken()].equals("vector")){
+			do{
+				tipo();
+				reconhecer(":");
+				reconhecer("IDEN");
+				while(getTokens()[getNumerotoken()].equals(",")){
+					reconhecer(",");
+					reconhecer("IDEN");
+				}
+				if(getTokens()[getNumerotoken()].equals(","))
+					reconhecer(":");
+				
+			}while(getTokens()[getNumerotoken()].equals("int") || getTokens()[getNumerotoken()].equals("vector"));
+		}
+		else{
+			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Identificador esperado");
+		}
+		
 		
 	}
 
