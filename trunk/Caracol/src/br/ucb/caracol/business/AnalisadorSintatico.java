@@ -367,11 +367,12 @@ public class AnalisadorSintatico {
 
 	public void reconhecer(String comand){
 		Numero numero = new Numero();
-		System.out.println((getIndexToken()+1)+"/"+getTokens().size()+"/"+comand+"/");
 		if(comand.equals("el_final")){
-			if(getIndexToken() == getTokens().size()){
-				//if(getTokens().get(getIndexToken()+1)).equals(anObject)
-				View.showFeedBack("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken())+"1 \n");
+			if(getIndexToken()+1 != getTokens().size()){
+				if(flag){
+					View.showFeedBack("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken())+"1 \n");
+				}
+				flag = true;
 				//throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken()-1));
 			}
 		}else if(comand.equals("numero")){
