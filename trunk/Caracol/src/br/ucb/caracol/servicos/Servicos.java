@@ -20,8 +20,10 @@ import br.ucb.caracol.view.JanelaPrincipal;
             BufferedReader br = new BufferedReader(new FileReader(file));
             StringBuilder saida = new StringBuilder();
             String linha;
-            while((linha = br.readLine()) != null)
+            while((linha = br.readLine()) != null){
                 saida.append(linha);
+                saida.append("\n");
+            }
             br.close();
             return saida.toString();
 
