@@ -2,7 +2,6 @@
 package br.ucb.caracol.business;
 
 import java.util.List;
-import br.ucb.caracol.dados.Alfabeto;
 import br.ucb.caracol.dados.Caracol;
 import br.ucb.caracol.dados.Identificadores;
 import br.ucb.caracol.dados.Numero;
@@ -15,6 +14,7 @@ public class AnalisadorSintatico {
 	private List<String> tokens;
 	private int indexToken;
 	private Boolean flag;
+	private Boolean hasErro;
 	
 	
 	public void verificaCodigo(String text, List<String> tokens) {
@@ -22,6 +22,7 @@ public class AnalisadorSintatico {
 		setCodigo(text);
 		setIndexToken(0);
 		flag = false;
+		hasErro = false;
 		formato_inicial();
 		
 	}
@@ -46,7 +47,11 @@ public class AnalisadorSintatico {
 			}
 		}else{
 			View.showFeedBack("Linha: 01 - Começo de programa esperado");
+			hasErro = true;
 			throw new CompilatorException("Linha: 01 - Começo de programa esperado");
+		}
+		if(!hasErro){
+			View.showFeedBack("Programa fonte analisado. Nenhum erro encontrado.");
 		}
 
 	}
@@ -66,6 +71,7 @@ public class AnalisadorSintatico {
 		}
 		else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperado início de corpo de programa"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperado início de corpo de programa");
 		}
 
@@ -131,6 +137,7 @@ public class AnalisadorSintatico {
 			reconhecer(")");
 		}else{
 			View.showFeedBack("ERRO Linha: "+(obterNumeroLinhaErro()+1)+" - Comando esperado"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+(obterNumeroLinhaErro()+1)+" - Comando esperado");
 		}	
 	}
@@ -147,6 +154,7 @@ public class AnalisadorSintatico {
 		}
 		else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Bloco esperado"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Bloco esperado");
 		}
 	}	
@@ -166,6 +174,7 @@ public class AnalisadorSintatico {
 		}
 		else{
 			View.showFeedBack("ERRO Linha: "+(obterNumeroLinhaErro()-1)+" - Esperada uma expressão"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+(obterNumeroLinhaErro()-2)+" - Esperada uma expressão");
 		}
 
@@ -195,6 +204,7 @@ public class AnalisadorSintatico {
 			}
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Operador ou identificador esperado"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Operador ou identificador esperado");
 		}
 	}
@@ -210,6 +220,7 @@ public class AnalisadorSintatico {
 			}
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Termo esperado"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Termo esperado");
 		}
 
@@ -241,6 +252,7 @@ public class AnalisadorSintatico {
 			}
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Fator esperado"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Fator");
 		}
 
@@ -259,6 +271,7 @@ public class AnalisadorSintatico {
 			}
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - CONSTANTE esperada"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - CONSTANTE esperada");
 		}
 	}
@@ -278,6 +291,7 @@ public class AnalisadorSintatico {
 		}
 		else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Declaração de um tipo esperada"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Declaração de um tipo esperada");
 		}
 	}
@@ -295,6 +309,7 @@ public class AnalisadorSintatico {
 			}
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Tipo esperado"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Tipo esperado");
 		}
 
@@ -315,6 +330,7 @@ public class AnalisadorSintatico {
 			corpo();
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Declaração da função esperada"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Declaração da função esperada");
 		}
 
@@ -338,6 +354,7 @@ public class AnalisadorSintatico {
 		}
 		else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Identificador esperado"+"\n");
+			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Identificador esperado");
 		}
 	}
