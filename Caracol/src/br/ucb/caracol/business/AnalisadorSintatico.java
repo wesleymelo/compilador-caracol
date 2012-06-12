@@ -65,8 +65,8 @@ public class AnalisadorSintatico {
 			reconhecer("el_final");
 		}
 		else{
-			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperado início de função"+"\n");
-			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperado início de função");
+			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperado início de corpo de programa"+"\n");
+			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperado início de corpo de programa");
 		}
 
 	}
@@ -81,78 +81,58 @@ public class AnalisadorSintatico {
 					reconhecer("]");
 					reconhecer(":=");
 					expr();
-				}
-				else{
+				}else{
 					reconhecer(":=");
 					expr();
 				}
-			}
-			else{
-				if(getTokens().get(getIndexToken()).equals("(")){
+			}else if(getTokens().get(getIndexToken()).equals("(")){
 					reconhecer("(");
-					do{
-						if(getTokens().get(getIndexToken()).equals(","))
-							reconhecer(",");
+					expr();
+					while(getTokens().get(getIndexToken()).equals(",")){
+						reconhecer(",");
 						expr();
-					}while(getTokens().get(getIndexToken()).equals(","));
-					reconhecer("(");
-				}
-				else{
-					if(getTokens().get(getIndexToken()).equals("si")){
-						reconhecer("si");
-						expr();
-						reconhecer("entonces");
-						bloco();
-
-						if(getTokens().get(getIndexToken()).equals("si_no")){
-							reconhecer("entonces");
-							bloco();
-						}
 					}
-					else{
-						if(getTokens().get(getIndexToken()).equals("si")){
-							reconhecer("repeticion");
-							do{
-								if(getTokens().get(getIndexToken()).equals(";"))
-									reconhecer(";");
-								cmd();
-							}while(getTokens().get(getIndexToken()).equals(";"));
-							reconhecer("hasta");
-							expr();
-						}
-						else{
-							if(getTokens().get(getIndexToken()).equals("exploracion")){
-								reconhecer("exploracion");
-								reconhecer("(");
-								do{
-									if(getTokens().get(getIndexToken()).equals(","))
-										reconhecer(",");
-									reconhecer("IDEN");									
-								}while(getTokens().get(getIndexToken()).equals(","));
-
-								reconhecer(")");
-							}
-							else{
-								if(new Caracol().getAlfabeto().verificaAlfabeto(getTokens().get(getIndexToken()).charAt(0))){
-									reconhecer(getTokens().get(getIndexToken()));
-									reconhecer("(");
-									do{
-										if(getTokens().get(getIndexToken()).equals(","))
-											reconhecer(",");
-										reconhecer("IDEN");									
-									}while(getTokens().get(getIndexToken()).equals(","));
-									reconhecer(")");
-								}
-								else{
-									View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Comando esperado"+"\n");
-									throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Comando esperado");
-								}
-							}
-						}
-					}
-				}
+					reconhecer(")");
 			}
-		}
+		}else if(getTokens().get(getIndexToken()).equals("si")){
+			reconhecer("si");
+			expr();
+			reconhecer("entonces");
+			bloco();
+			if(getTokens().get(getIndexToken()).equals("si_no")){
+				bloco();
+			}
+		}else if(getTokens().get(getIndexToken()).equals("repeticion")){
+			reconhecer("repeticion");
+			cmd();
+			while(getTokens().get(getIndexToken()).equals(";")){
+				reconhecer(";");
+				cmd();
+			}
+			reconhecer("hasta");
+			expr();
+		}else if(getTokens().get(getIndexToken()).equals("exploracion")){
+				reconhecer("exploracion");
+				reconhecer("(");
+				reconhecer("IDEN");
+				while(getTokens().get(getIndexToken()).equals(",")){
+					reconhecer(",");
+					reconhecer("IDEN");									
+				}
+				reconhecer(")");
+		}else if(new Caracol().getAlfabeto().verificaAlfabeto(getTokens().get(getIndexToken()))){
+			reconhecer(getTokens().get(getIndexToken()));
+			reconhecer("(");
+			reconhecer("IDEN");						
+			while(getTokens().get(getIndexToken()).equals(",")){
+				reconhecer(",");
+				reconhecer("IDEN");									
+			}
+			reconhecer(")");
+		}else{
+			View.showFeedBack("ERRO Linha: "+(obterNumeroLinhaErro()+1)+" - Comando esperado"+"\n");
+			throw new CompilatorException("ERRO Linha: "+(obterNumeroLinhaErro()+1)+" - Comando esperado");
+		}	
 	}
 
 	private void bloco() {
@@ -177,16 +157,16 @@ public class AnalisadorSintatico {
 				new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 			siexpr();
 			if(getTokens().get(getIndexToken()).equals("=") || getTokens().get(getIndexToken()).equals("<") || getTokens().get(getIndexToken()).equals(">") || 
-					getTokens().get(getIndexToken()).equals("<") || getTokens().get(getIndexToken()).equals("<>") || getTokens().get(getIndexToken()).equals("<=") ||
-					getTokens().get(getIndexToken()).equals(">=")){
+				getTokens().get(getIndexToken()).equals("<") || getTokens().get(getIndexToken()).equals("<>") || getTokens().get(getIndexToken()).equals("<=") ||
+				getTokens().get(getIndexToken()).equals(">=")){
 				reconhecer(getTokens().get(getIndexToken()));
 				siexpr();
 			}
 
 		}
 		else{
-			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperada uma expressão"+"\n");
-			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Esperada uma expressão");
+			View.showFeedBack("ERRO Linha: "+(obterNumeroLinhaErro()-1)+" - Esperada uma expressão"+"\n");
+			throw new CompilatorException("ERRO Linha: "+(obterNumeroLinhaErro()-2)+" - Esperada uma expressão");
 		}
 
 	}
@@ -281,7 +261,6 @@ public class AnalisadorSintatico {
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - CONSTANTE esperada"+"\n");
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - CONSTANTE esperada");
 		}
-
 	}
 
 	private void dec_var() {
@@ -323,19 +302,17 @@ public class AnalisadorSintatico {
 
 	private void dec_func() {
 		if((getTokens().get(getIndexToken())).equals("la_funcion")){
-			while((getTokens().get(getIndexToken())).equals("la_funcion")){
-				reconhecer("la_funcion");
-				reconhecer("IDEN");
-				reconhecer("(");
-				while(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vetor")){
-					l_par();
-				}
-				reconhecer(")");
-				reconhecer(":");
-				tipo();
-				reconhecer(";");
-				corpo();
+			reconhecer("la_funcion");
+			reconhecer("IDEN");
+			reconhecer("(");
+			if(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vetor")){
+				l_par();
 			}
+			reconhecer(")");
+			reconhecer(":");
+			tipo();
+			reconhecer(";");
+			corpo();
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Declaração da função esperada"+"\n");
 			throw new CompilatorException("ERRO Linha: "+obterNumeroLinhaErro()+" - Declaração da função esperada");
@@ -369,9 +346,12 @@ public class AnalisadorSintatico {
 		Numero numero = new Numero();
 		if(comand.equals("el_final")){
 			if(getIndexToken()+1 != getTokens().size()){
-				if(flag){
-					View.showFeedBack("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken())+"1 \n");
+				if(!verificaElfinal()){
+					View.showFeedBack("ERRO  Esperava enccontrar um el_final \n");
 				}
+				else if(flag && getTokens().get(getIndexToken()).equals("el_final")){
+					View.showFeedBack("ERRO Linha : "+(obterNumeroLinhaErro())+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken())+"\n");
+				}else 
 				flag = true;
 				//throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken()-1));
 			}
@@ -386,7 +366,7 @@ public class AnalisadorSintatico {
 				//		throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um "+comand);
 			}
 		}else if((getIndexToken()==getTokens().size()) || !comand.equals(getTokens().get(getIndexToken()))){
-			View.showFeedBack("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um(a) "+comand+"\n");
+			View.showFeedBack("ERRO Linha : "+(obterNumeroLinhaErro()+1)+" Esperado um(a) "+comand+"\n");
 			//	throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um(a) "+comand);
 		}
 		setIndexToken(getIndexToken()+1);
@@ -394,6 +374,20 @@ public class AnalisadorSintatico {
 
 
 
+
+	private boolean verificaElfinal() {
+		int i = 0;
+		if(codigo.contains("comienza") && codigo.contains("el_program")){
+			for (String t : tokens) {
+				if(t.equals("el_final")){
+					i++;
+				}
+			}
+			return (i == 2)?true: false;
+		}
+		return false;
+		
+	}
 
 	public int obterNumeroLinhaErro(){
 		int linhaErro = 1;
@@ -407,10 +401,10 @@ public class AnalisadorSintatico {
 			if(getTokens().get(getIndexToken()).equals(getTokens().get(i)))
 				qtdeIguais++;
 		}
-
+		
 		//verifica em q linha foi o erro
-		for(int j=0; j<codigo.length-1; j++){
-			if(codigo[j].charAt(0)==13)
+		for(int j=0; j < codigo.length; j++){
+			if(codigo[j].charAt(0)== '\n')
 				linhaErro++;
 			if(getIndexToken()==getTokens().size())
 				break;
@@ -420,7 +414,7 @@ public class AnalisadorSintatico {
 					break;
 			}
 		}
-		return linhaErro;
+		return linhaErro-1;
 	}
 
 
@@ -447,8 +441,4 @@ public class AnalisadorSintatico {
 	public void setIndexToken(int indexToken) {
 		this.indexToken = indexToken;
 	}
-
-
-
-
 }
