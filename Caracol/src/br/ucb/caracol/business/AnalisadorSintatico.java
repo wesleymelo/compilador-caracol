@@ -2,6 +2,7 @@
 package br.ucb.caracol.business;
 
 import java.util.List;
+import br.ucb.caracol.dados.Alfabeto;
 import br.ucb.caracol.dados.Caracol;
 import br.ucb.caracol.dados.Identificadores;
 import br.ucb.caracol.dados.Numero;
@@ -34,6 +35,7 @@ public class AnalisadorSintatico {
 		}
 		if(getTokens().get(getIndexToken()).equals("la_funcion") || getTokens().get(getIndexToken()).equals("el_program")){
 			if(getTokens().get(getIndexToken()).equals("la_funcion")){
+				dec_func();
 				while(getTokens().get(getIndexToken()).equals("la_funcion")){
 					dec_func();
 				}
@@ -394,13 +396,13 @@ public class AnalisadorSintatico {
 
 	private boolean verificaElfinal() {
 		int i = 0;
-		if(codigo.contains("comienza") && codigo.contains("el_program")){
+		if(codigo.contains("comienza") && codigo.contains("el_program") || codigo.contains("la_funcion") && codigo.contains("comienza")){
 			for (String t : tokens) {
 				if(t.equals("el_final")){
 					i++;
 				}
 			}
-			return (i == 2)?true: false;
+			return (i == 2 || i == 4)?true: false;
 		}
 		return false;
 		
