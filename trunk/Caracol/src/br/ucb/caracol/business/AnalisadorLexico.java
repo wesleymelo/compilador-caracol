@@ -127,8 +127,8 @@ public class AnalisadorLexico {
 
 
 	public static int verificaSequencia(StringBuilder valor, String codigo, int i, String msgNormal){
-		if((i >= codigo.length()- 1) || Validacoes.isTerminalSymbol(codigo.charAt(i)+""))
-			View.showFeedBack(msgNormal+valor.toString()+" ]\n");
+		/*if((i >= codigo.length()- 1) || Validacoes.isTerminalSymbol(codigo.charAt(i)+""))
+			View.showFeedBack(msgNormal+valor.toString()+" ]\n");*/
 		if(i < codigo.length()-1){
 			i++;
 			valor.append(codigo.charAt(i));
