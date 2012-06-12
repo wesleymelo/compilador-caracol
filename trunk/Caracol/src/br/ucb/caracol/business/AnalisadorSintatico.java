@@ -2,7 +2,6 @@
 package br.ucb.caracol.business;
 
 import java.util.List;
-import br.ucb.caracol.dados.Alfabeto;
 import br.ucb.caracol.dados.Caracol;
 import br.ucb.caracol.dados.Identificadores;
 import br.ucb.caracol.dados.Numero;
