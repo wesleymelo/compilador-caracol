@@ -102,7 +102,7 @@ public class AnalisadorSintatico {
 			reconhecer("si");
 			expr();
 			reconhecer("entonces");
-			bloco();	
+			bloco();
 			if(getTokens().get(getIndexToken()).equals("si_no")){
 				reconhecer("si_no");
 				bloco();
