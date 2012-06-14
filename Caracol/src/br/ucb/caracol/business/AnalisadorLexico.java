@@ -4,6 +4,7 @@ package br.ucb.caracol.business;
 
 import java.util.ArrayList;
 import br.ucb.caracol.dados.KeysWords;
+import br.ucb.caracol.enuns.EnumSimboloComposto;
 import br.ucb.caracol.exceptions.CompilatorException;
 import br.ucb.caracol.servicos.Validacoes;
 import br.ucb.caracol.view.View;
@@ -29,7 +30,7 @@ public class AnalisadorLexico {
 					if(!Validacoes.isValido(codigo.charAt(i))){
 						if(Validacoes.isTerminarNaoSimbolo(codigo.charAt(i))){
 							View.showFeedBack("ERRO 01: SÍMBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
-							throw new CompilatorException("ERRO 01: S�MBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
+							throw new CompilatorException("ERRO 01: SÍMBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
 						}
 					}else{
 						if(Validacoes.isLetra(codigo.charAt(i)))
@@ -60,7 +61,6 @@ public class AnalisadorLexico {
 					valor.append(codigo.charAt(i));
 					if(i <= codigo.length()-1)
 						i++;
-					//System.out.println("i: "+i+" i-1: "+(codigo.length()-1)+"codigo: "+codigo.charAt(i));
 				}
 			}
 		}
@@ -111,10 +111,12 @@ public class AnalisadorLexico {
 				i++;
 				if(i < codigo.length()){
 					if(Validacoes.isSimbolo(codigo.charAt(i))){
-						valor.append(codigo.charAt(i));
-						i++;
-						temp.add(valor.toString());
-						return verificaSequencia(valor, codigo, i,"Símbolo composto: [ ");
+						if(verificaSimboloComposto(codigo.charAt(i-1),codigo.charAt(i))){
+							valor.append(codigo.charAt(i));
+							i++;
+							temp.add(valor.toString());
+							return verificaSequencia(valor, codigo, i,"Símbolo composto: [ ");
+						}
 					}
 				}
 				temp.add(valor.toString());
@@ -124,6 +126,15 @@ public class AnalisadorLexico {
 		temp.add(valor.toString());
 		return verificaSequencia(valor, codigo, i,"Símbolo Simples: [ ");
 
+	}
+
+
+	private static boolean verificaSimboloComposto(char charAt, char charAt2) {
+		StringBuilder composto = new StringBuilder();
+		composto.append(charAt);
+		composto.append(charAt2);
+		return EnumSimboloComposto.findSimboloComp(composto.toString());
+		
 	}
 
 
