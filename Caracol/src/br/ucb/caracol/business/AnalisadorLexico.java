@@ -29,7 +29,7 @@ public class AnalisadorLexico {
 					if(!Validacoes.isValido(codigo.charAt(i))){
 						if(Validacoes.isTerminarNaoSimbolo(codigo.charAt(i))){
 							View.showFeedBack("ERRO 01: SÍMBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
-							//throw new CompilatorException("ERRO 01: S�MBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
+							throw new CompilatorException("ERRO 01: S�MBOLO DESCONHECIDO: [ "+codigo.charAt(i)+" ]\n");
 						}
 					}else{
 						if(Validacoes.isLetra(codigo.charAt(i)))
@@ -42,12 +42,13 @@ public class AnalisadorLexico {
 				}
 			}
 		}
-		AnalisadorSintatico sintatico = new AnalisadorSintatico();
-		sintatico.verificaCodigo(codigo, temp);
 		if(isComentario){
 			View.showFeedBack("ERRO 02: FIM DE COMENTÁRIO ESPERADO\n");
 			throw new CompilatorException("ERRO 02: FIM DE COMENTÁRIO ESPERADO\n");
 		}
+		AnalisadorSintatico sintatico = new AnalisadorSintatico();
+		sintatico.verificaCodigo(codigo, temp);
+		
 	}
 
 
