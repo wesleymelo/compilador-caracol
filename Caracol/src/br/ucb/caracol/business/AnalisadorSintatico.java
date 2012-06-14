@@ -147,13 +147,13 @@ public class AnalisadorSintatico {
 	}
 
 	private void bloco() {
-		if(getTokens().get(getIndexToken()).equals("+")){
+		if(getTokens().get(getIndexToken()).equals("{")){
 			reconhecer("{");
-			do{
-				if(getTokens().get(getIndexToken()).equals(";"))
-					reconhecer(";");
-				cmd();									
-			}while(getTokens().get(getIndexToken()).equals(";"));
+			cmd();
+			while(getTokens().get(getIndexToken()).equals(";")){
+				reconhecer(";");
+				cmd();
+			}
 			reconhecer("}");
 		}
 		else{
@@ -196,7 +196,9 @@ public class AnalisadorSintatico {
 					reconhecer("-");
 				}
 			}
+			System.out.println("Termo in : "+getTokens().get(getIndexToken()));
 			termo();
+			System.out.println("Termo out: "+getTokens().get(getIndexToken()));
 			while(getTokens().get(getIndexToken()).equals("+") || getTokens().get(getIndexToken()).equals("-") || getTokens().get(getIndexToken()).equals("o")){
 				if(getTokens().get(getIndexToken()).equals("+")){
 					reconhecer("+");
@@ -369,6 +371,7 @@ public class AnalisadorSintatico {
 
 	public void reconhecer(String comand){
 		Numero numero = new Numero();
+		System.out.println("Coman: "+ comand);
 		if(comand.equals("el_final")){
 			if(getIndexToken()+1 != getTokens().size()){
 				if(!verificaElfinal()){
