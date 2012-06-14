@@ -16,7 +16,6 @@ public class AnalisadorSintatico {
 	private Boolean flag;
 	private Boolean hasErro;
 	
-	
 	public void verificaCodigo(String text, List<String> tokens) {
 		setTokens(tokens);
 		setCodigo(text);
@@ -35,17 +34,12 @@ public class AnalisadorSintatico {
 		if(getTokens().get(getIndexToken()).equals("la_funcion") || getTokens().get(getIndexToken()).equals("el_program")){
 			if(getTokens().get(getIndexToken()).equals("la_funcion")){
 				dec_func();
-				while(getTokens().get(getIndexToken()).equals("la_funcion")){
-					dec_func();
-				}
 			}	
-			if(getTokens().get(getIndexToken()).equals("el_program")){
-				reconhecer("el_program");
-				reconhecer("IDEN");
-				reconhecer(";");
-				corpo();
-				reconhecer("el_final");
-			}
+			reconhecer("el_program");
+			reconhecer("IDEN");
+			reconhecer(";");
+			corpo();
+			reconhecer("el_final");
 		}else{
 			View.showFeedBack("Linha: 01 - Começo de programa esperado");
 			hasErro = true;
@@ -269,7 +263,8 @@ public class AnalisadorSintatico {
 				reconhecer("-");
 			}
 			if(new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
-				reconhecer(getTokens().get(getIndexToken()));
+				//reconhecer(getTokens().get(getIndexToken()));
+				reconhecer("numero");
 			}
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - CONSTANTE esperada"+"\n");
@@ -304,6 +299,7 @@ public class AnalisadorSintatico {
 				reconhecer("int");
 			}else if(getTokens().get(getIndexToken()).equals("vetor")){
 				reconhecer("vetor");
+				reconhecer("[");
 				if(new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 					reconhecer(getTokens().get(getIndexToken()));
 				}
@@ -319,17 +315,19 @@ public class AnalisadorSintatico {
 
 	private void dec_func() {
 		if((getTokens().get(getIndexToken())).equals("la_funcion")){
-			reconhecer("la_funcion");
-			reconhecer("IDEN");
-			reconhecer("(");
-			if(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vetor")){
-				l_par();
-			}
-			reconhecer(")");
-			reconhecer(":");
-			tipo();
-			reconhecer(";");
-			corpo();
+			do{
+				reconhecer("la_funcion");
+				reconhecer("IDEN");
+				reconhecer("(");
+				if(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vetor")){
+                    l_par();
+				}
+				reconhecer(")");
+				reconhecer(":");
+				tipo();
+				reconhecer(";");
+				corpo();
+			}while((getTokens().get(getIndexToken())).equals("la_funcion"));
 		}else{
 			View.showFeedBack("ERRO Linha: "+obterNumeroLinhaErro()+" - Declaração da função esperada"+"\n");
 			hasErro = true;
@@ -340,7 +338,7 @@ public class AnalisadorSintatico {
 	}
 
 	private void l_par() {
-		if(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vector")){
+		if(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vetor")){
 			do{
 				tipo();
 				reconhecer(":");
@@ -349,9 +347,8 @@ public class AnalisadorSintatico {
 					reconhecer(",");
 					reconhecer("IDEN");
 				}
-				if(getTokens().get(getIndexToken()).equals(","))
-					reconhecer(":");
-
+				if(getTokens().get(getIndexToken()).equals(";"))
+					reconhecer(";");
 			}while(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vetor"));
 		}
 		else{
