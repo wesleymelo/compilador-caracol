@@ -51,5 +51,4 @@ public class Simbolos {
 		this.simbolos = simbolos;
 	}
 	
-
 }
