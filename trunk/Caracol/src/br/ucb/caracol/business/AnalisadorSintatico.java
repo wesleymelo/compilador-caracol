@@ -73,7 +73,9 @@ public class AnalisadorSintatico {
 	}
 
 	private void cmd() {
-		if(getTokens().get(getIndexToken()).equals("IDEN")){
+		boolean isCmd = false;
+		if(Identificadores.verificaId(getTokens().get(getIndexToken()))){
+			isCmd = true;
 			reconhecer("IDEN");
 			if(getTokens().get(getIndexToken()).equals("[") || getTokens().get(getIndexToken()).equals(":=")){
 				if(getTokens().get(getIndexToken()).equals("[")){
@@ -96,6 +98,7 @@ public class AnalisadorSintatico {
 					reconhecer(")");
 			}
 		}else if(getTokens().get(getIndexToken()).equals("si")){
+			isCmd = true;
 			reconhecer("si");
 			expr();
 			reconhecer("entonces");
@@ -105,6 +108,7 @@ public class AnalisadorSintatico {
 				bloco();
 			}
 		}else if(getTokens().get(getIndexToken()).equals("repeticion")){
+			isCmd = true;
 			reconhecer("repeticion");
 			cmd();
 			while(getTokens().get(getIndexToken()).equals(";")){
@@ -114,6 +118,7 @@ public class AnalisadorSintatico {
 			reconhecer("hasta");
 			expr();
 		}else if(getTokens().get(getIndexToken()).equals("exploracion")){
+				isCmd = true;
 				reconhecer("exploracion");
 				reconhecer("(");
 				reconhecer("IDEN");
@@ -122,8 +127,9 @@ public class AnalisadorSintatico {
 					reconhecer("IDEN");									
 				}
 				reconhecer(")");
-		}else if(new Caracol().getAlfabeto().verificaAlfabeto(getTokens().get(getIndexToken()))){
-			reconhecer(getTokens().get(getIndexToken()));
+		}else if(getTokens().get(getIndexToken()).equals("letra")){
+			isCmd = true;
+			reconhecer("letra");
 			reconhecer("(");
 			reconhecer("IDEN");						
 			while(getTokens().get(getIndexToken()).equals(",")){
@@ -131,7 +137,9 @@ public class AnalisadorSintatico {
 				reconhecer("IDEN");									
 			}
 			reconhecer(")");
-		}else{
+		}
+
+		if(!isCmd){
 			View.showFeedBack("ERRO Linha: "+(obterNumeroLinhaErro()+1)+" - Comando esperado"+"\n");
 			hasErro = true;
 			throw new CompilatorException("ERRO Linha: "+(obterNumeroLinhaErro()+1)+" - Comando esperado");
@@ -157,7 +165,7 @@ public class AnalisadorSintatico {
 
 	private void expr() {
 		if(getTokens().get(getIndexToken()).equals("+") || getTokens().get(getIndexToken()).equals("-") || 
-				getTokens().get(getIndexToken()).equals("(") || getTokens().get(getIndexToken()).equals("no") || getTokens().get(getIndexToken()).equals("IDEN") || 
+				getTokens().get(getIndexToken()).equals("(") || getTokens().get(getIndexToken()).equals("no") || Identificadores.verificaId(getTokens().get(getIndexToken())) || 
 				new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 			siexpr();
 			if(getTokens().get(getIndexToken()).equals("=") || getTokens().get(getIndexToken()).equals("<") || getTokens().get(getIndexToken()).equals(">") || 
@@ -166,6 +174,7 @@ public class AnalisadorSintatico {
 				reconhecer(getTokens().get(getIndexToken()));
 				siexpr();
 			}
+			
 
 		}
 		else{
@@ -178,7 +187,7 @@ public class AnalisadorSintatico {
 
 	private void siexpr() {
 		if(getTokens().get(getIndexToken()).equals("+") || getTokens().get(getIndexToken()).equals("-") || getTokens().get(getIndexToken()).equals("(") || 
-				getTokens().get(getIndexToken()).equals("no") || getTokens().get(getIndexToken()).equals("IDEN") ||
+				getTokens().get(getIndexToken()).equals("no") || Identificadores.verificaId(getTokens().get(getIndexToken())) ||
 				new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 			if(getTokens().get(getIndexToken()).equals("+") || getTokens().get(getIndexToken()).equals("-")){		
 				if(getTokens().get(getIndexToken()).equals("+")){
@@ -207,7 +216,7 @@ public class AnalisadorSintatico {
 
 	private void termo() {
 		if(getTokens().get(getIndexToken()).equals("+") || getTokens().get(getIndexToken()).equals("-") || getTokens().get(getIndexToken()).equals("(") || 
-				getTokens().get(getIndexToken()).equals("no") || getTokens().get(getIndexToken()).equals("IDEN") ||
+				getTokens().get(getIndexToken()).equals("no") || Identificadores.verificaId(getTokens().get(getIndexToken())) ||
 				new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 			fator();
 			while (getTokens().get(getIndexToken()).equals("*") || getTokens().get(getIndexToken()).equals("/") || getTokens().get(getIndexToken()).equals("y")) {
@@ -227,7 +236,7 @@ public class AnalisadorSintatico {
 	private void fator() {
 		if(getTokens().get(getIndexToken()).equals("(") || getTokens().get(getIndexToken()).equals("+") || getTokens().get(getIndexToken()).equals("-") ||
 				getTokens().get(getIndexToken()).equals("no") || new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken())) || 
-				getTokens().get(getIndexToken()).equals("IDEN")){				
+				Identificadores.verificaId(getTokens().get(getIndexToken()))){				
 			if(getTokens().get(getIndexToken()).equals("(")){
 				reconhecer("(");
 				expr();
@@ -243,7 +252,7 @@ public class AnalisadorSintatico {
 				fator();
 			}else if(new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 				constante();
-			}else if(getTokens().get(getIndexToken()).equals("IDEN")){
+			}else if(Identificadores.verificaId(getTokens().get(getIndexToken()))){
 				reconhecer("IDEN");
 			}
 		}else{
