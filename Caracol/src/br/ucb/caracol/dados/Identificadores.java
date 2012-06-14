@@ -9,6 +9,7 @@ public class Identificadores {
 	}
 	public static boolean verificaId(String token){
 		Caracol li = new Caracol();
+		System.out.println("token: "+token);
 		KeysWords pr = new KeysWords();
 		return !(li.getNumeros().verificaNumero(token) || li.getSimbolos().verificaSimbolos(token.charAt(0)) 
 				|| pr.verificaPalavrasReservadas(token));
