@@ -23,12 +23,12 @@ public class AnalisadorSintatico {
 		flag = false;
 		hasErro = false;
 		formato_inicial();
-		
 	}
 
 	private void formato_inicial() {
 		if(getTokens().size()==0){
 			View.showFeedBack("Linha: 01 - Nenhum código encontrado");
+			hasErro = true;
 			throw new CompilatorException("Linha: 01 - Nenhum código encontrado");
 		}
 		if(getTokens().get(getIndexToken()).equals("la_funcion") || getTokens().get(getIndexToken()).equals("el_program")){
@@ -51,7 +51,7 @@ public class AnalisadorSintatico {
 
 	}
 
-	private void corpo() {
+	private void corpo(){
 		if(getTokens().get(getIndexToken()).equals("comienza")){
 			reconhecer("comienza");
 			while(getTokens().get(getIndexToken()).equals("int") || getTokens().get(getIndexToken()).equals("vetor")){
@@ -73,6 +73,7 @@ public class AnalisadorSintatico {
 	}
 
 	private void cmd() {
+		System.out.println("ITS HETE CMD ->"+getTokens().get(getIndexToken()));
 		boolean isCmd = false;
 		if(Identificadores.verificaId(getTokens().get(getIndexToken()))){
 			isCmd = true;
@@ -108,6 +109,7 @@ public class AnalisadorSintatico {
 				bloco();
 			}
 		}else if(getTokens().get(getIndexToken()).equals("repeticion")){
+			System.out.println("AQUI OH -----");
 			isCmd = true;
 			reconhecer("repeticion");
 			cmd();
@@ -115,7 +117,9 @@ public class AnalisadorSintatico {
 				reconhecer(";");
 				cmd();
 			}
+			System.out.println("AQUI hasta");
 			reconhecer("hasta");
+			System.out.println("AQUI depois hasta");
 			expr();
 		}else if(getTokens().get(getIndexToken()).equals("exploracion")){
 				isCmd = true;
@@ -169,9 +173,19 @@ public class AnalisadorSintatico {
 				new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 			siexpr();
 			if(getTokens().get(getIndexToken()).equals("=") || getTokens().get(getIndexToken()).equals("<") || getTokens().get(getIndexToken()).equals(">") || 
-				getTokens().get(getIndexToken()).equals("<") || getTokens().get(getIndexToken()).equals("<>") || getTokens().get(getIndexToken()).equals("<=") ||
-				getTokens().get(getIndexToken()).equals(">=")){
-				reconhecer(getTokens().get(getIndexToken()));
+			    getTokens().get(getIndexToken()).equals("<>") || getTokens().get(getIndexToken()).equals("<=") || getTokens().get(getIndexToken()).equals(">=")){
+				if(getTokens().get(getIndexToken()).equals("="))
+					reconhecer("=");
+				else if(getTokens().get(getIndexToken()).equals("<"))
+					reconhecer("<");
+				else if(getTokens().get(getIndexToken()).equals(">"))
+					reconhecer(">");
+				else if(getTokens().get(getIndexToken()).equals("<>"))
+					reconhecer("<>");
+				else if(getTokens().get(getIndexToken()).equals("<="))
+					reconhecer("<=");
+				else if(getTokens().get(getIndexToken()).equals(">="))
+					reconhecer(">=");
 				siexpr();
 			}
 			
@@ -222,7 +236,12 @@ public class AnalisadorSintatico {
 				new Caracol().getNumeros().verificaNumero(getTokens().get(getIndexToken()))){
 			fator();
 			while (getTokens().get(getIndexToken()).equals("*") || getTokens().get(getIndexToken()).equals("/") || getTokens().get(getIndexToken()).equals("y")) {
-				reconhecer(getTokens().get(getIndexToken()));
+				if(getTokens().get(getIndexToken()).equals("*"))
+					reconhecer("*");
+				else if(getTokens().get(getIndexToken()).equals("/"))
+					reconhecer("/");
+				else if(getTokens().get(getIndexToken()).equals("y"))
+					reconhecer("y");
 				fator();
 			}
 		}else{
@@ -293,7 +312,7 @@ public class AnalisadorSintatico {
 					if(getTokens().get(getIndexToken()).equals(","))
 						reconhecer(",");
 					reconhecer("IDEN");
-				}while(getTokens().get(getIndexToken()).equals(",") );
+				}while(getTokens().get(getIndexToken()).equals(","));
 				reconhecer(";");
 			}
 		}
@@ -375,9 +394,11 @@ public class AnalisadorSintatico {
 		if(comand.equals("el_final")){
 			if(getIndexToken()+1 != getTokens().size()){
 				if(!verificaElfinal()){
-					View.showFeedBack("ERRO  Esperava enccontrar um el_final \n");
+					hasErro = true;
+					View.showFeedBack("ERRO  Esperava encontrar um el_final \n");
 				}
 				else if(flag && getTokens().get(getIndexToken()).equals("el_final")){
+					hasErro = true;
 					View.showFeedBack("ERRO Linha : "+(obterNumeroLinhaErro())+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken())+"\n");
 				}else 
 				flag = true;
@@ -385,27 +406,27 @@ public class AnalisadorSintatico {
 			}
 		}else if(comand.equals("numero")){
 			if((getIndexToken()==getTokens().size()) || !numero.verificaNumero(getTokens().get(getIndexToken()))){
+				hasErro = true;
 				View.showFeedBack("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um "+comand+"\n");
 				//	throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um "+comand);
 			}
 		}else if(comand.equals("IDEN")){
 			if((getIndexToken()==getTokens().size()) || !Identificadores.verificaId(getTokens().get(getIndexToken()))){
+				hasErro = true;
 				View.showFeedBack("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um "+comand+"\n");
 				//		throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um "+comand);
 			}
 		}else if((getIndexToken()==getTokens().size()) || !comand.equals(getTokens().get(getIndexToken()))){
+			hasErro = true;
 			View.showFeedBack("ERRO Linha : "+(obterNumeroLinhaErro()+1)+" Esperado um(a) "+comand+"\n");
 			//	throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um(a) "+comand);
 		}
 		setIndexToken(getIndexToken()+1);
 	}
 
-
-
-
 	private boolean verificaElfinal() {
 		int i = 0;
-		if(codigo.contains("comienza") && codigo.contains("el_program") || codigo.contains("la_funcion") && codigo.contains("comienza")){
+		if(tokens.contains("comienza") && tokens.contains("el_program") || tokens.contains("la_funcion") && tokens.contains("comienza")){
 			for (String t : tokens) {
 				if(t.equals("el_final")){
 					i++;
