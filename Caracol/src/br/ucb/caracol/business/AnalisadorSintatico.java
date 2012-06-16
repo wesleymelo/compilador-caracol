@@ -58,10 +58,16 @@ public class AnalisadorSintatico {
 				dec_var();
 			}
 			cmd();
+			
+			System.out.println("OI OH -> "+getTokens().get(getIndexToken()));
+			
 			while(getTokens().get(getIndexToken()).equals(";")){
 				reconhecer(";");
 				cmd();
 			}
+			
+			System.out.println("OI OH late-> "+getTokens().get(getIndexToken()));
+			
 			reconhecer("el_final");
 		}
 		else{
@@ -73,7 +79,6 @@ public class AnalisadorSintatico {
 	}
 
 	private void cmd() {
-		System.out.println("ITS HETE CMD ->"+getTokens().get(getIndexToken()));
 		boolean isCmd = false;
 		if(Identificadores.verificaId(getTokens().get(getIndexToken()))){
 			isCmd = true;
@@ -109,7 +114,6 @@ public class AnalisadorSintatico {
 				bloco();
 			}
 		}else if(getTokens().get(getIndexToken()).equals("repeticion")){
-			System.out.println("AQUI OH -----");
 			isCmd = true;
 			reconhecer("repeticion");
 			cmd();
@@ -117,9 +121,7 @@ public class AnalisadorSintatico {
 				reconhecer(";");
 				cmd();
 			}
-			System.out.println("AQUI hasta");
 			reconhecer("hasta");
-			System.out.println("AQUI depois hasta");
 			expr();
 		}else if(getTokens().get(getIndexToken()).equals("exploracion")){
 				isCmd = true;
@@ -395,13 +397,11 @@ public class AnalisadorSintatico {
 			if(getIndexToken()+1 != getTokens().size()){
 				if(!verificaElfinal()){
 					hasErro = true;
-					View.showFeedBack("ERRO  Esperava encontrar um el_final \n");
-				}
-				else if(flag && getTokens().get(getIndexToken()).equals("el_final")){
+				}else if(flag && getTokens().get(getIndexToken()).equals("el_final")){
 					hasErro = true;
 					View.showFeedBack("ERRO Linha : "+(obterNumeroLinhaErro())+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken())+"\n");
 				}else 
-				flag = true;
+					flag = true;
 				//throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken()-1));
 			}
 		}else if(comand.equals("numero")){
@@ -421,18 +421,46 @@ public class AnalisadorSintatico {
 			View.showFeedBack("ERRO Linha : "+(obterNumeroLinhaErro()+1)+" Esperado um(a) "+comand+"\n");
 			//	throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um(a) "+comand);
 		}
-		setIndexToken(getIndexToken()+1);
+		
+		System.out.println("FLAG: "+ flag);
+		
+		if(getIndexToken()+1 != getTokens().size())
+			setIndexToken(getIndexToken()+1);
+		else if(!flag){
+			
+			if(!verificaElfinal()){
+				hasErro = true;
+				flag = true;
+			}
+		}
+			
 	}
 
 	private boolean verificaElfinal() {
-		int i = 0;
-		if(tokens.contains("comienza") && tokens.contains("el_program") || tokens.contains("la_funcion") && tokens.contains("comienza")){
-			for (String t : tokens) {
-				if(t.equals("el_final")){
+		int i = 0, j = 0;
+		
+		if((tokens.contains("la_funcion") && tokens.contains("comienza")) || (tokens.contains("el_program") && tokens.contains("comienza"))){
+			for (String t : tokens) {	
+				if(t.equals("comienza") || t.equals("el_program") || t.equals("la_funcion")){
 					i++;
 				}
 			}
-			return (i == 2 || i == 4)?true: false;
+			
+			for (String t : tokens) {
+				if(t.equals("el_final")){
+					j++;
+				}
+			}
+			
+			if((i - j) < 0){
+				View.showFeedBack("ERRO - Não esperava encontrar "+(i - j)*(-1)+" el_final \n");
+				return false;
+			}
+			else if((i - j) > 0){
+				View.showFeedBack("ERRO - Esperava encontrar "+(i - j)+" el_final \n");
+				return false;
+			}
+			return true;
 		}
 		return false;
 		
