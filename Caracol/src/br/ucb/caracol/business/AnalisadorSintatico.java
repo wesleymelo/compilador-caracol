@@ -398,9 +398,11 @@ public class AnalisadorSintatico {
 					flag = true;
 				//throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken()-1));
 			}
-			else if(!verificaElfinal()){
-				flag = true;
-				hasErro = true;
+			else if(!flag){
+					if(!verificaElfinal()){
+						flag = true;
+						hasErro = true;
+					}
 			}
 				
 		}else if(comand.equals("numero")){
