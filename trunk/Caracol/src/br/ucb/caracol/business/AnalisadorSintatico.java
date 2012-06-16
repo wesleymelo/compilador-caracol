@@ -391,12 +391,16 @@ public class AnalisadorSintatico {
 			if(getIndexToken()+1 != getTokens().size()){
 				if(!verificaElfinal()){
 					hasErro = true;
-				}else if(flag && getTokens().get(getIndexToken()).equals("el_final")){
+				}else if(flag && getTokens().get(getIndexToken()).equals("el_final") && !verificaElfinal()){
 					hasErro = true;
 					View.showFeedBack("ERRO Linha : "+(obterNumeroLinhaErro())+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken())+"\n");
 				}else 
 					flag = true;
 				//throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken()-1));
+			}
+			else if(!verificaElfinal()){
+				flag = true;
+				hasErro = true;
 			}
 				
 		}else if(comand.equals("numero")){
