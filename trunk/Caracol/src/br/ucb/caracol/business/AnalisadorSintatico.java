@@ -58,16 +58,10 @@ public class AnalisadorSintatico {
 				dec_var();
 			}
 			cmd();
-			
-			System.out.println("OI OH -> "+getTokens().get(getIndexToken()));
-			
 			while(getTokens().get(getIndexToken()).equals(";")){
 				reconhecer(";");
 				cmd();
-			}
-			
-			System.out.println("OI OH late-> "+getTokens().get(getIndexToken()));
-			
+			}			
 			reconhecer("el_final");
 		}
 		else{
@@ -404,6 +398,7 @@ public class AnalisadorSintatico {
 					flag = true;
 				//throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Não é esperado mais nenhum comandos depois de "+getTokens().get(getIndexToken()-1));
 			}
+				
 		}else if(comand.equals("numero")){
 			if((getIndexToken()==getTokens().size()) || !numero.verificaNumero(getTokens().get(getIndexToken()))){
 				hasErro = true;
@@ -422,12 +417,9 @@ public class AnalisadorSintatico {
 			//	throw new CompilatorException("ERRO Linha : "+obterNumeroLinhaErro()+" Esperado um(a) "+comand);
 		}
 		
-		System.out.println("FLAG: "+ flag);
-		
 		if(getIndexToken()+1 != getTokens().size())
 			setIndexToken(getIndexToken()+1);
 		else if(!flag){
-			
 			if(!verificaElfinal()){
 				hasErro = true;
 				flag = true;
